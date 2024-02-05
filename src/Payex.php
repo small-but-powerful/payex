@@ -234,8 +234,6 @@ class Payex
             'reference_number' => data_get($requestPayload, 'reference_number') ?? $this->generateRefNo(),
             'currency' => $this->getCurrencyCode(),
             'callback_url' => $this->getCallbackUrl(),
-            'return_url' => $this->getReturnUrl(),
-            'reject_url' => $this->getRejectUrl(),
         ] + $requestPayload;
     }
 
@@ -315,16 +313,6 @@ class Payex
     public function getCallbackUrl(): string
     {
         return config('payex.callback_url') ?? route('payex.callback');
-    }
-
-    public function getReturnUrl(): string
-    {
-        return config('payex.return_url') ?? '';
-    }
-
-    public function getRejectUrl(): string
-    {
-        return config('payex.reject_url') ?? '';
     }
 
     private function generateRefNo()
