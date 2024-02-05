@@ -35,7 +35,8 @@ class Payex
 
         $payexToken = PayexToken::where('email', $this->getEmail())->first();
 
-        if ($payexToken && $payexToken->expires_at?->isFuture()) {
+        if ($payexToken && $payexToken->expires_at?->isFuture())
+        {
             return [
                 'token' => $payexToken->token,
                 'expiration' => $payexToken->expires_at?->toDateTimeString(),
@@ -50,7 +51,8 @@ class Payex
 
         $result = $response->json();
 
-        if (data_get($result, 'token')) {
+        if (data_get($result, 'token'))
+        {
             PayexToken::updateOrCreate([
                 'email' => $this->getEmail()
             ], [
@@ -79,7 +81,8 @@ class Payex
 
         $payload = $this->preparePayload($payload);
 
-        try {
+        try
+        {
             $response = $this->makeRequest(
                 method: 'post',
                 endPoint: $this->getUrl('payment_intent'),
@@ -90,7 +93,8 @@ class Payex
 
             $result = data_get($resp, 'result.0');
 
-            if (data_get($resp, 'status') == '00' && $result) {
+            if (data_get($resp, 'status') == '00' && $result)
+            {
                 $payment->update([
                     'status' => data_get($resp, 'status'),
                     'status_description' => data_get($resp, 'message') ?? null,
@@ -105,7 +109,9 @@ class Payex
                     'key' => data_get($result, 'key'),
                     'payment_url' => data_get($result, 'url'),
                 ];
-            } else {
+            }
+            else
+            {
                 $payment->update([
                     'status' => data_get($resp, 'status'),
                     'status_description' => data_get($resp, 'message') ?? null,
@@ -116,7 +122,9 @@ class Payex
                     'message' => data_get($resp, 'message') ?? 'Failed to create payment.',
                 ];
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th)
+        {
             throw $th;
         }
     }
@@ -125,7 +133,8 @@ class Payex
     {
         $endPoint = Str::replace('{id}', $id, $this->getUrl('transactions.one'));
 
-        try {
+        try
+        {
             $response = $this->makeRequest(
                 method: 'get',
                 endPoint: $endPoint
@@ -134,14 +143,17 @@ class Payex
             $resp = $response->json();
 
             return $resp;
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th)
+        {
             throw $th;
         }
     }
 
     public function getTransactions(array $params = [])
     {
-        try {
+        try
+        {
             $response = $this->makeRequest(
                 method: 'get',
                 endPoint: $this->getUrl('transactions.index'),
@@ -156,7 +168,9 @@ class Payex
                 'result' => data_get($resp, 'result'),
                 'total_pages' => data_get($resp, 'total_pages'),
             ];
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th)
+        {
             throw $th;
         }
     }
@@ -178,10 +192,11 @@ class Payex
 
     private function preparePayload(array $payload): array
     {
-        return collect($payload)->map(function ($value, $key) {
+        return collect($payload)->map(function ($value, $key)
+        {
             return $value;
         })
-            ->replace(['return_url' => route('payex.done')])
+            // ->replace(['return_url' => route('payex.done')])
             ->toArray();
     }
 
@@ -244,9 +259,12 @@ class Payex
 
     public function setBaseUrl(): void
     {
-        if ($this->getSandboxMode() === true) {
+        if ($this->getSandboxMode() === true)
+        {
             $this->baseUrl = config('payex.sandbox.base_url');
-        } else {
+        }
+        else
+        {
             $this->baseUrl = config('payex.base_url');
         }
     }
@@ -301,7 +319,8 @@ class Payex
     {
         $ref_no = $this->randomAlphanumeric();
 
-        while (PayexPayment::where('ref_no', $ref_no)->count()) {
+        while (PayexPayment::where('ref_no', $ref_no)->count())
+        {
             $ref_no = $this->randomAlphanumeric();
         }
 
