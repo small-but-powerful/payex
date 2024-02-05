@@ -10,6 +10,8 @@ return [
     'currency_code' => env('PAYEX_CURRENCY_CODE', 'MYR'),
     'base_url' => 'https://api.payex.io',
     'callback_url' => env('PAYEX_CALLBACK_URL'),
+    'return_url' => env('PAYEX_RETURN_URL'),
+    'reject_url' => env('PAYEX_REJECT_URL'),
     'sandbox' => [
         'mode' => env('PAYEX_SANDBOX_MODE', false),
         'base_url' => 'https://sandbox-payexapi.azurewebsites.net',
